@@ -3,7 +3,6 @@ CTFd.plugin.run((_CTFd) => {
     const htmlEntities = _CTFd.utils.html.htmlEntities;
     const $ = _CTFd.lib.$;
     const CTFdFetch = _CTFd.fetch;
-    const ezAlert = _CTFd.ui.ezq.ezAlert;
     const ezToast = _CTFd.ui.ezq.ezToast;
 
     function startChallenge(_event) {
@@ -17,7 +16,7 @@ CTFd.plugin.run((_CTFd) => {
           challenge_name,
         )}</strong>`,
         success: function () {
-          CTFdFetch("/api/v1/challenge/start", {
+          CTFdFetch("/api/v1/dockerized_challenges/instances/start", {
             method: "POST",
             body: JSON.stringify({
               challenge_id: id,
@@ -29,13 +28,6 @@ CTFd.plugin.run((_CTFd) => {
             .then(function (response) {
               if (response.success) {
                 window.location.reload();
-                ezToast({
-                    title: "Success",
-                    body: `Docker instance for <strong>${htmlEntities(
-                        challenge_name,
-                    )}</strong> started successfully.`,
-                    icon: "success",
-                    });
               } else {
                 ezToast({
                   title: "Error",
@@ -67,7 +59,7 @@ CTFd.plugin.run((_CTFd) => {
             challenge_name,
           )}</strong>`,
           success: function () {
-            CTFdFetch("/api/v1/challenge/restart", {
+            CTFdFetch("/api/v1/dockerized_challenges/instances/restart", {
               method: "POST",
               body: JSON.stringify({
                 challenge_id: id,
@@ -79,13 +71,6 @@ CTFd.plugin.run((_CTFd) => {
               .then(function (response) {
                 if (response.success) {
                   window.location.reload();
-                  ezToast({
-                    title: "Success",
-                    body: `Docker instance for <strong>${htmlEntities(
-                        challenge_name,
-                    )}</strong> restarted successfully.`,
-                    icon: "success",
-                    });
                 } else {
                     ezToast({
                         title: "Error",
@@ -117,7 +102,7 @@ CTFd.plugin.run((_CTFd) => {
             challenge_name,
             )}</strong>`,
             success: function () {
-            CTFdFetch("/api/v1/challenge/stop", {
+            CTFdFetch("/api/v1/dockerized_challenges/instances/stop", {
                 method: "POST",
                 body: JSON.stringify({
                 challenge_id: id,
@@ -128,14 +113,7 @@ CTFd.plugin.run((_CTFd) => {
                 })
                 .then(function (response) {
                 if (response.success) {
-                    window.location.reload();
-                    ezToast({
-                        title: "Success",
-                        body: `Docker instance for <strong>${htmlEntities(
-                            challenge_name,
-                        )}</strong> stopped successfully.`,
-                        icon: "success",
-                    });
+                  window.location.reload();
                 } else {
                     ezToast({
                         title: "Error",
@@ -169,11 +147,6 @@ CTFd.plugin.run((_CTFd) => {
           }).then(function (response) {
             if (response.status === 200) {
               window.location.reload();
-                ezToast({
-                    title: "Success",
-                    body: `Challenge <strong>${htmlEntities(challenge_name)}</strong> deleted successfully.`,
-                    icon: "success",
-                });
             } else {
               ezToast({
                 title: "Error",

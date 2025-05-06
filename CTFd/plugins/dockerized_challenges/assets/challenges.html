@@ -103,15 +103,17 @@
 							</td>
                             <td class="text-center">
                                 <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-outline-success challenge-start-button" data-toggle="tooltip" data-placement="top" title="Start Challenge" data-challenge-id="{{ challenge.id }}">
-                                        <i class="btn-fa fas fa-play"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-outline-primary challenge-restart-button" data-toggle="tooltip" data-placement="top" title="Restart Challenge" data-challenge-id="{{ challenge.id }}">
-                                        <i class="btn-fa fas fa-refresh"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-outline-warning challenge-stop-button" data-toggle="tooltip" data-placement="top" title="Stop Challenge" data-challenge-id="{{ challenge.id }}">
-                                        <i class="btn-fa fas fa-stop"></i>
-                                    </button>
+									{% if challenge.type == 'dockerized' %}
+                                    	<button type="button" class="btn btn-outline-success challenge-start-button" data-toggle="tooltip" data-placement="top" title="Start Challenge" data-challenge-id="{{ challenge.id }}">
+                                        	<i class="btn-fa fas fa-play"></i>
+                                    	</button>
+                                    	<button type="button" class="btn btn-outline-primary challenge-restart-button" data-toggle="tooltip" data-placement="top" title="Restart Challenge" data-challenge-id="{{ challenge.id }}">
+                                        	<i class="btn-fa fas fa-refresh"></i>
+                                    	</button>
+                                    	<button type="button" class="btn btn-outline-warning challenge-stop-button" data-toggle="tooltip" data-placement="top" title="Stop Challenge" data-challenge-id="{{ challenge.id }}">
+                                        	<i class="btn-fa fas fa-stop"></i>
+                                    	</button>
+									{% endif %}
                                     <button type="button" class="btn btn-outline-danger challenge-delete-button" data-toggle="tooltip" data-placement="top" title="Delete Challenge" data-challenge-id="{{ challenge.id }}">
                                         <i class="btn-fa fas fa-trash-alt"></i>
                                     </button>

@@ -3,6 +3,7 @@ CTFd.plugin.run((_CTFd) => {
     const htmlEntities = _CTFd.utils.html.htmlEntities;
     const $ = _CTFd.lib.$;
     const CTFdFetch = _CTFd.fetch;
+    const ezToast = _CTFd.ui.ezq.ezToast;
 
     $(() => {
         $(".start-challenge").click(function (_e) {
@@ -12,7 +13,7 @@ CTFd.plugin.run((_CTFd) => {
               window.CHALLENGE_NAME,
             )}</strong>`,
             success: function () {
-              CTFdFetch("/api/v1/challenge/start", {
+              CTFdFetch("/api/v1/dockerized_challenges/instances/start", {
                 method: "POST",
                 body: JSON.stringify({
                   challenge_id: window.CHALLENGE_ID,
@@ -25,12 +26,20 @@ CTFd.plugin.run((_CTFd) => {
                   if (response.success) {
                     window.location.reload();
                   } else {
-                    ezQuery({
+                    ezToast({
                       title: "Error",
-                      body: response.error,
-                      button: "OK",
+                      body: "An error occurred while starting the challenge.",
+                      icon: "error",
                     });
                   }
+                })
+                .catch(function (error) {
+                  console.error("Error:", error);
+                  ezToast({
+                    title: "Error",
+                    body: "An error occurred while starting the challenge.",
+                    icon: "error",
+                  });
                 });
             },
           });
@@ -43,7 +52,7 @@ CTFd.plugin.run((_CTFd) => {
               window.CHALLENGE_NAME,
             )}</strong>`,
             success: function () {
-              CTFdFetch("/api/v1/challenge/restart", {
+              CTFdFetch("/api/v1/dockerized_challenges/instances/restart", {
                 method: "POST",
                 body: JSON.stringify({
                   challenge_id: window.CHALLENGE_ID,
@@ -56,13 +65,21 @@ CTFd.plugin.run((_CTFd) => {
                   if (response.success) {
                     window.location.reload();
                   } else {
-                    ezQuery({
+                    ezToast({
                       title: "Error",
-                      body: response.error,
-                      button: "OK",
+                      body: "An error occurred while restarting the challenge.",
+                      icon: "error",
                     });
                   }
                 })
+                .catch(function (error) {
+                  console.error("Error:", error);
+                  ezToast({
+                    title: "Error",
+                    body: "An error occurred while restarting the challenge.",
+                    icon: "error",
+                  });
+                });
             },
           });
         });
@@ -74,7 +91,7 @@ CTFd.plugin.run((_CTFd) => {
               window.CHALLENGE_NAME,
             )}</strong>`,
             success: function () {
-              CTFdFetch("/api/v1/challenge/stop", {
+              CTFdFetch("/api/v1/dockerized_challenges/instances/stop", {
                 method: "POST",
                 body: JSON.stringify({
                   challenge_id: window.CHALLENGE_ID,
@@ -87,12 +104,20 @@ CTFd.plugin.run((_CTFd) => {
                   if (response.success) {
                     window.location.reload();
                   } else {
-                    ezQuery({
+                    ezToast({
                       title: "Error",
-                      body: response.error,
-                      button: "OK",
+                      body: "An error occurred while stopping the challenge.",
+                      icon: "error",
                     });
                   }
+                })
+                .catch(function (error) {
+                  console.error("Error:", error);
+                  ezToast({
+                    title: "Error",
+                    body: "An error occurred while stopping the challenge.",
+                    icon: "error",
+                  });
                 });
             },
           });

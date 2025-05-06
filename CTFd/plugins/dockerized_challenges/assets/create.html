@@ -2,8 +2,10 @@
 
 {% block header %}
 <div class="alert alert-secondary" role="alert">
-	Dynamic value challenges decrease in value as they receive solves. The more solves a dynamic challenge has,
-	the lower its value is to everyone who has solved it.
+	Dockerized Challenges run in a Docker container.
+	<br>
+	They can be standard or dynamic challenges.
+	<br>
 </div>
 {% endblock %}
 
@@ -18,8 +20,8 @@
 		<small>
 			<span>Is it a standard or a dynamic challenge ?</span>
 			<ul>
-				<li>Standard: </li>
-				<li>dynamic: </li>
+				<li>Standard: The challenge has an unchanging value</li>
+				<li>Dynamic: The challenge value decreases as it gets resolved</li>
 			</ul>
 		</small>
 	</label>

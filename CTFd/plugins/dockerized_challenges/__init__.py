@@ -12,6 +12,8 @@ from CTFd.plugins.challenges import CHALLENGE_CLASSES, BaseChallenge
 from CTFd.plugins.dynamic_challenges import DynamicValueChallenge, DynamicChallenge
 from CTFd.plugins.dynamic_challenges.decay import DECAY_FUNCTIONS, logarithmic
 from CTFd.plugins.migrations import upgrade
+from CTFd.api import CTFd_API_v1
+from CTFd.plugins.dockerized_challenges.instances import instances_namespace
 
 
 class DockerizedChallenge(Challenges):
@@ -120,3 +122,6 @@ def load(app):
     template_challenges_path = dir_path / 'assets' / 'challenges.html'
     override_template('admin/challenges/challenge.html', open(template_challenge_path).read())
     override_template('admin/challenges/challenges.html', open(template_challenges_path).read())
+    
+    # Register the API namespace
+    CTFd_API_v1.add_namespace(instances_namespace, "/dockerized_challenges/instances")
