@@ -26,7 +26,10 @@ class DockerizedChallenge(Challenges):
     minimum = db.Column(db.Integer, default=0)
     decay = db.Column(db.Integer, default=0)
     function = db.Column(db.String(32), default="logarithmic")
-    
+    image = db.Column(db.String(32), default=None)
+    container = db.Column(db.String(64), default=None)
+    url = db.Column(db.String(64), default=None)
+    is_running = db.Column(db.Boolean, default=False)
 
     def __init__(self, *args, **kwargs):
         super(DockerizedChallenge, self).__init__(**kwargs)
