@@ -28,7 +28,6 @@ class DockerizedChallenge(Challenges):
     function = db.Column(db.String(32), default="logarithmic")
     image = db.Column(db.String(32), default=None)
     container = db.Column(db.String(64), default=None)
-    url = db.Column(db.String(64), default=None)
     is_running = db.Column(db.Boolean, default=False)
 
     def __init__(self, *args, **kwargs):

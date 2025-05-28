@@ -107,19 +107,12 @@ class ChallengeInstanceStart(Resource):
         # Verify if the instance is already running
         if challenge.is_running:
             return {"success": False, "errors": {"challenge_id": ["Challenge instance is already running"]}}, 400
-        
-        # Start the container
-        container = start_container(challenge.image)
 
-        if container:
+        if not start_container(challenge.image, challenge.container):
             ## Update challenge instance status
             challenge.is_running = True
-            challenge.container = container.name
             db.session.add(challenge)
             db.session.commit()
-            
-            # Add challenge container to cache
-            cache.set(f"dockerized_challenge_{challenge_id}_container", container)
 
             return {"success": True, "data": {"message": "Instance started successfully"}}
         else:
@@ -166,14 +159,8 @@ class ChallengeInstanceRestart(Resource):
         if not challenge.is_running:
             return {"success": False, "errors": {"challenge_id": ["Challenge instance is not running"]}}, 400
         
-        # Get the container from cache
-        container = cache.get(f"dockerized_challenge_{challenge_id}_container")
-        
-        if not container:
-            return {"success": False, "errors": {"challenge_id": ["Challenge instance not found"]}}, 404
-        
         # Restart the container
-        if not restart_container(container):
+        if not restart_container(challenge.container):
             return {"success": False, "errors": "Internal Error"}, 500
         
         return {"success": True, "data": {"message": "Instance restarted successfully"}}
@@ -216,23 +203,13 @@ class ChallengeInstanceStop(Resource):
         if not challenge.is_running:
             return {"success": False, "errors": {"challenge_id": ["Challenge instance is not running"]}}, 400
         
-        # Get the container from cache
-        container = cache.get(f"dockerized_challenge_{challenge_id}_container")
-
-        if not container:
-            return {"success": False, "errors": {"challenge_id": ["Challenge instance not found"]}}, 404
-        
         # Stop the container
-        if not stop_container(container):
+        if not stop_container(challenge.container):
             return {"success": False, "errors": "Internal Error"}, 500
         
         # Update challenge instance status
         challenge.is_running = False
-        challenge.container = None
         db.session.add(challenge)
         db.session.commit()
-
-        # Remove the container from cache
-        cache.delete(f"dockerized_challenge_{challenge_id}_container")
 
         return {"success": True, "data": {"message": "Instance stopped successfully"}}

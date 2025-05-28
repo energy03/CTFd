@@ -71,10 +71,18 @@
 	<div class="form-group">
 		<label for="value">Image<br>
 			<small class="form-text text-muted">
-				This is how many points the challenge is worth right now.
+				The ID of the image used to start the container for the challenge.
 			</small>
 		</label>
-		<input type="text" class="form-control" name="image" placeholder="Enter Image" >
+		<input type="text" class="form-control" name="image" value="{{ challenge.image }}" >
+	</div>
+	<div class="form-group">
+		<label for="value">Container<br>
+			<small class="form-text text-muted">
+				The ID of the container to start.
+			</small>
+		</label>
+		<input type="text" name="container" class="form-control" value="{{ challenge.container }}" >
 	</div>
 </div>
 {% endblock %}
