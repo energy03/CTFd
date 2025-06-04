@@ -57,6 +57,15 @@
 					{{ challenge.state }}
 				</span>
 			</h5>
+			{% if challenge.type == 'dockerized' %}
+				{% set running_badge_state = 'badge-success' if challenge.is_running else 'badge-danger' %}
+				{% set running_badge_text = 'Running' if challenge.is_running else 'Stopped' %}
+				<h5>
+					<span class="badge {{ running_badge_state }} challenge-state">
+						{{ running_badge_text }}
+					</span>
+				</h5>
+			{% endif %}
 			<h3 class="text-center">{{ challenge.value }} points</h3>
 			<div class="pt-3">
 				<a class="preview-challenge">
@@ -72,18 +81,21 @@
 					   title="Comments"></i>
 				</a>
 				{% if challenge.type == 'dockerized' %}
-					<a class="start-challenge">
-						<i class="btn-fa fas fa-play  fa-2x px-2" data-toggle="tooltip" data-placement="top"
-					   		title="Start Challenge"></i>
-					</a>
-                	<a class="restart-challenge">
-						<i class="btn-fa fas fa-refresh fa-2x px-2" data-toggle="tooltip" data-placement="top"
-					   		title="Restart Challenge"></i>
-					</a>
-                	<a class="stop-challenge">
-						<i class="btn-fa fas fa-stop fa-2x px-2" data-toggle="tooltip" data-placement="top"
-					   		title="Stop Challenge"></i>
-					</a>
+					{% if  challenge.is_running %}
+						<a class="restart-challenge">
+							<i class="btn-fa fas fa-refresh fa-2x px-2" data-toggle="tooltip" data-placement="top"
+					   			title="Restart Challenge"></i>
+						</a>
+                		<a class="stop-challenge">
+							<i class="btn-fa fas fa-stop fa-2x px-2" data-toggle="tooltip" data-placement="top"
+					   			title="Stop Challenge"></i>
+						</a>
+					{% else %}
+						<a class="start-challenge">
+							<i class="btn-fa fas fa-play  fa-2x px-2" data-toggle="tooltip" data-placement="top"
+					   			title="Start Challenge"></i>
+						</a>
+					{% endif %}
 				{% endif %}
 				<a class="delete-challenge">
 					<i class="btn-fa fas fa-trash-alt fa-2x px-2" data-toggle="tooltip" data-placement="top"

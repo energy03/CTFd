@@ -1,0 +1,70 @@
+services:
+  ctfd:
+    build:
+      context: ..
+      dockerfile: custom/Dockerfile
+    user: root
+    restart: always
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      - UPLOAD_FOLDER=/var/uploads
+      - DATABASE_URL=mysql+pymysql://${MARIADB_USER}:${MARIADB_PASSWORD}@db/${MARIADB_DATABASE}
+      - REDIS_URL=redis://cache:6379
+      - WORKERS=1
+      - LOG_FOLDER=/var/log/CTFd
+      - ACCESS_LOG=-
+      - ERROR_LOG=-
+      - REVERSE_PROXY=true
+      - DOCKER_API_URL=ssh://${DOCKER_API_USER}@${DOCKER_API_HOST}
+    volumes:
+      - ../.data/CTFd/logs:/var/log/CTFd
+      - ../.data/CTFd/uploads:/var/uploads
+      - ..:/opt/CTFd:rw
+      
+    depends_on:
+      - db
+    networks:
+        default:
+        internal:
+
+  # Commented reverse proxy serve
+  # Using our own on the deployment server
+  # nginx:
+  #   image: nginx:stable
+  #   restart: always
+  #   volumes:
+  #     - ./conf/nginx/http.conf:/etc/nginx/nginx.conf
+  #   ports:
+  #     - 80:80
+  #   depends_on:
+  #     - ctfd
+
+  db:
+    image: mariadb:10.11
+    restart: always
+    environment:
+      - MARIADB_ROOT_PASSWORD
+      - MARIADB_USER
+      - MARIADB_PASSWORD
+      - MARIADB_DATABASE
+      - MARIADB_AUTO_UPGRADE=1
+    volumes:
+      - ../.data/mysql:/var/lib/mysql
+    networks:
+        internal:
+    # This command is required to set important mariadb defaults
+    command: [mysqld, --character-set-server=utf8mb4, --collation-server=utf8mb4_unicode_ci, --wait_timeout=28800, --log-warnings=0]
+
+  cache:
+    image: redis:4
+    restart: always
+    volumes:
+      - ../.data/redis:/data
+    networks:
+        internal:
+
+networks:
+    default:
+    internal:
+        internal: true

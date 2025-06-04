@@ -81,6 +81,7 @@
 						<th class="sort-col text-center"><b>Value</b></th>
 						<th class="sort-col text-center"><b>Type</b></th>
 						<th class="sort-col text-center"><b>State</b></th>
+						<th class="sort-col text-center"><b>Container</b></th>
                         <th class="sort-col text-center"><b>Actions</b></th>
 					</tr>
 					</thead>
@@ -101,18 +102,28 @@
 								{% set badge_state = 'badge-danger' if challenge.state == 'hidden' else 'badge-success' %}
 								<span class="badge {{ badge_state }}">{{ challenge.state }}</span>
 							</td>
+							<td class="text-center">
+								{% if challenge.type == 'dockerized' %}
+									{% set running_badge_state = 'badge-success' if challenge.is_running else 'badge-danger' %}
+									{% set running_badge_text = 'Running' if challenge.is_running else 'Stopped' %}
+									<span class="badge {{ running_badge_state }}">{{ running_badge_text }}</span>
+								{% endif %}
+							</td>
                             <td class="text-center">
                                 <div class="btn-group" role="group">
 									{% if challenge.type == 'dockerized' %}
-                                    	<button type="button" class="btn btn-outline-success challenge-start-button" data-toggle="tooltip" data-placement="top" title="Start Challenge" data-challenge-id="{{ challenge.id }}">
-                                        	<i class="btn-fa fas fa-play"></i>
-                                    	</button>
-                                    	<button type="button" class="btn btn-outline-primary challenge-restart-button" data-toggle="tooltip" data-placement="top" title="Restart Challenge" data-challenge-id="{{ challenge.id }}">
-                                        	<i class="btn-fa fas fa-refresh"></i>
-                                    	</button>
-                                    	<button type="button" class="btn btn-outline-warning challenge-stop-button" data-toggle="tooltip" data-placement="top" title="Stop Challenge" data-challenge-id="{{ challenge.id }}">
-                                        	<i class="btn-fa fas fa-stop"></i>
-                                    	</button>
+										{% if challenge.is_running %}
+											<button type="button" class="btn btn-outline-primary challenge-restart-button" data-toggle="tooltip" data-placement="top" title="Restart Challenge" data-challenge-id="{{ challenge.id }}">
+                                        		<i class="btn-fa fas fa-refresh"></i>
+                                    		</button>
+                                    		<button type="button" class="btn btn-outline-warning challenge-stop-button" data-toggle="tooltip" data-placement="top" title="Stop Challenge" data-challenge-id="{{ challenge.id }}">
+                                        		<i class="btn-fa fas fa-stop"></i>
+                                    		</button>
+										{% else %}
+											<button type="button" class="btn btn-outline-success challenge-start-button" data-toggle="tooltip" data-placement="top" title="Start Challenge" data-challenge-id="{{ challenge.id }}">
+                                        		<i class="btn-fa fas fa-play"></i>
+                                    		</button>
+										{% endif %}
 									{% endif %}
                                     <button type="button" class="btn btn-outline-danger challenge-delete-button" data-toggle="tooltip" data-placement="top" title="Delete Challenge" data-challenge-id="{{ challenge.id }}">
                                         <i class="btn-fa fas fa-trash-alt"></i>

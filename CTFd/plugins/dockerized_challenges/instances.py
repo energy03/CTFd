@@ -58,6 +58,7 @@ from CTFd.utils.user import (
     is_admin,
 )
 from .utils import (
+    get_image,
     start_container,
     restart_container,
     stop_container
@@ -107,8 +108,23 @@ class ChallengeInstanceStart(Resource):
         # Verify if the instance is already running
         if challenge.is_running:
             return {"success": False, "errors": {"challenge_id": ["Challenge instance is already running"]}}, 400
+        
+        # Get the image
+        image = get_image(challenge.image)
 
-        if not start_container(challenge.image, challenge.container):
+        if not image:
+            return {"success": False, "errors": {"image": ["Docker image not found"]}}, 404
+        
+        # Get the exposed ports list of the image
+        exposed_ports = list(image.attrs.get("Config", {}).get("ExposedPorts", {}).keys())
+
+        ports = {}
+        if len(exposed_ports) == 1 and challenge.port:
+                ports = { exposed_ports[0]: ("127.0.0.1", challenge.port) }
+        
+        container = start_container(image, challenge.container, ports=ports)
+        
+        if container:
             ## Update challenge instance status
             challenge.is_running = True
             db.session.add(challenge)
@@ -116,6 +132,7 @@ class ChallengeInstanceStart(Resource):
 
             return {"success": True, "data": {"message": "Instance started successfully"}}
         else:
+            
             return {"success": False, "errors": "Internal Error"}, 500
 
 
