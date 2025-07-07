@@ -6,9 +6,9 @@ WORKDIR /opt/CTFd
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         build-essential \
+        git \
         libffi-dev \
         libssl-dev \
-        git \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && python -m venv /opt/venv
@@ -34,19 +34,8 @@ RUN apt-get update \
         libffi8 \
         libssl3 \
         openssh-client \
-        sshpass \
-        net-tools \
-        htop \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-
-RUN mkdir -p /root/.ssh \
-    && chmod 700 /root/.ssh \
-    && ssh-keygen -t rsa -b 4096 -f /root/.ssh/id_rsa -N "" \
-    && touch /root/.ssh/known_hosts \
-    && chmod 644 /root/.ssh/known_hosts \
-    && ssh-keyscan 192.168.1.104 >> /root/.ssh/known_hosts \
-    && sshpass -p "energy" ssh-copy-id energy@192.168.1.104
 
 COPY --chown=1001:1001 .. /opt/CTFd
 
@@ -65,5 +54,5 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 USER 1001
 EXPOSE 8000
-# ENTRYPOINT [ "sshpass", "-p", "energy", "ssh", "-o", "StrictHostKeyChecking=no", "energy@192.168.1.104" ]
+
 ENTRYPOINT ["/opt/CTFd/docker-entrypoint.sh"]

@@ -1,5 +1,6 @@
 CTFd.plugin.run((_CTFd) => {
     const ezQuery = _CTFd.ui.ezq.ezQuery;
+    const ezProgressBar = _CTFd.ui.ezq.ezProgressBar;
     const htmlEntities = _CTFd.utils.html.htmlEntities;
     const $ = _CTFd.lib.$;
     const CTFdFetch = _CTFd.fetch;
@@ -13,6 +14,10 @@ CTFd.plugin.run((_CTFd) => {
               window.CHALLENGE_NAME,
             )}</strong>`,
             success: function () {
+              pg = ezProgressBar({
+                width: 50,
+                title: "Starting Docker Instance",
+              });
               CTFdFetch("/api/v1/dockerized_challenges/instances/start", {
                 method: "POST",
                 body: JSON.stringify({
@@ -24,8 +29,25 @@ CTFd.plugin.run((_CTFd) => {
                 })
                 .then(function (response) {
                   if (response.success) {
-                    window.location.reload();
+                    pg = ezProgressBar({
+                      target: pg,
+                      width: 100,
+                    });
+                    pg.modal("hide");
+                    ezToast({
+                      title: "Success",
+                      body: "Docker instance started successfully.",
+                      icon: "success",
+                    });
+                    setTimeout(() => {
+                      window.location.reload();
+                    }, 1000);
                   } else {
+                    pg = ezProgressBar({
+                      target: pg,
+                      width: 0,
+                    });
+                    pg.modal("hide");
                     ezToast({
                       title: "Error",
                       body: "An error occurred while starting the challenge.",
@@ -34,7 +56,11 @@ CTFd.plugin.run((_CTFd) => {
                   }
                 })
                 .catch(function (error) {
-                  console.error("Error:", error);
+                  pg = ezProgressBar({
+                    target: pg,
+                    width: 0,
+                  });
+                  pg.modal("hide");
                   ezToast({
                     title: "Error",
                     body: "An error occurred while starting the challenge.",
@@ -52,6 +78,10 @@ CTFd.plugin.run((_CTFd) => {
               window.CHALLENGE_NAME,
             )}</strong>`,
             success: function () {
+              pg = ezProgressBar({
+                width: 50,
+                title: "Restarting Docker Instance",
+              });
               CTFdFetch("/api/v1/dockerized_challenges/instances/restart", {
                 method: "POST",
                 body: JSON.stringify({
@@ -63,8 +93,25 @@ CTFd.plugin.run((_CTFd) => {
                 })
                 .then(function (response) {
                   if (response.success) {
-                    window.location.reload();
+                    pg = ezProgressBar({
+                      target: pg,
+                      width: 100,
+                    });
+                    pg.modal("hide");
+                    ezToast({
+                      title: "Success",
+                      body: "Docker instance restarted successfully.",
+                      icon: "success",
+                    });
+                    setTimeout(() => {
+                      window.location.reload();
+                    }, 1000);
                   } else {
+                    pg = ezProgressBar({
+                      target: pg,
+                      width: 0,
+                    });
+                    pg.modal("hide");
                     ezToast({
                       title: "Error",
                       body: "An error occurred while restarting the challenge.",
@@ -73,7 +120,11 @@ CTFd.plugin.run((_CTFd) => {
                   }
                 })
                 .catch(function (error) {
-                  console.error("Error:", error);
+                  pg = ezProgressBar({
+                    target: pg,
+                    width: 0,
+                  });
+                  pg.modal("hide");
                   ezToast({
                     title: "Error",
                     body: "An error occurred while restarting the challenge.",
@@ -91,6 +142,10 @@ CTFd.plugin.run((_CTFd) => {
               window.CHALLENGE_NAME,
             )}</strong>`,
             success: function () {
+              pg = ezProgressBar({
+                width: 50,
+                title: "Stopping Docker Instance",
+              });
               CTFdFetch("/api/v1/dockerized_challenges/instances/stop", {
                 method: "POST",
                 body: JSON.stringify({
@@ -102,8 +157,25 @@ CTFd.plugin.run((_CTFd) => {
                 })
                 .then(function (response) {
                   if (response.success) {
-                    window.location.reload();
+                    pg = ezProgressBar({
+                      target: pg,
+                      width: 100,
+                    });
+                    pg.modal("hide");
+                    ezToast({
+                      title: "Success",
+                      body: "Docker instance stopped successfully.",
+                      icon: "success",
+                    });
+                    setTimeout(() => {
+                      window.location.reload();
+                    }, 1000);
                   } else {
+                    pg = ezProgressBar({
+                      target: pg,
+                      width: 0,
+                    });
+                    pg.modal("hide");
                     ezToast({
                       title: "Error",
                       body: "An error occurred while stopping the challenge.",
@@ -112,7 +184,11 @@ CTFd.plugin.run((_CTFd) => {
                   }
                 })
                 .catch(function (error) {
-                  console.error("Error:", error);
+                  pg = ezProgressBar({
+                    target: pg,
+                    width: 0,
+                  });
+                  pg.modal("hide");
                   ezToast({
                     title: "Error",
                     body: "An error occurred while stopping the challenge.",

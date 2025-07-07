@@ -1,16 +1,10 @@
 from pathlib import Path
 from CTFd.utils.plugins import override_template
 from flask import Blueprint
-
-from CTFd.exceptions.challenges import (
-    ChallengeCreateException,
-    ChallengeUpdateException,
-)
 from CTFd.models import Challenges, db
 from CTFd.plugins import register_plugin_assets_directory
 from CTFd.plugins.challenges import CHALLENGE_CLASSES, BaseChallenge
-from CTFd.plugins.dynamic_challenges import DynamicValueChallenge, DynamicChallenge
-from CTFd.plugins.dynamic_challenges.decay import DECAY_FUNCTIONS, logarithmic
+from CTFd.plugins.dynamic_challenges import DynamicValueChallenge
 from CTFd.plugins.migrations import upgrade
 from CTFd.api import CTFd_API_v1
 from CTFd.plugins.dockerized_challenges.instances import instances_namespace
@@ -121,10 +115,18 @@ def load(app):
     
     # Override default templates for challenge and challenges pages of admin theme
     dir_path = Path(__file__).parent.resolve()
-    template_challenge_path = dir_path / 'assets' / 'challenge.html'
-    template_challenges_path = dir_path / 'assets' / 'challenges.html'
+    template_challenge_path = dir_path / 'templates' / 'challenge.html'
+    template_challenges_path = dir_path / 'templates' / 'challenges.html'
     override_template('admin/challenges/challenge.html', open(template_challenge_path).read())
     override_template('admin/challenges/challenges.html', open(template_challenges_path).read())
     
     # Register the API namespace
     CTFd_API_v1.add_namespace(instances_namespace, "/dockerized_challenges/instances")
+
+    # Register the blueprint for the challenge type
+    app.register_blueprint(
+        CTFdDockerizedChallenge.blueprint,
+        url_prefix=CTFdDockerizedChallenge.route,
+    )
+
+    

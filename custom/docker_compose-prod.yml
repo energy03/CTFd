@@ -6,13 +6,12 @@ services:
     user: root
     restart: always
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     environment:
       - UPLOAD_FOLDER=/var/uploads
-      # - DATABASE_URL=mysql+pymysql://${MARIADB_USER}:${MARIADB_PASSWORD}@db/${MARIADB_DATABASE}
       - DATABASE_HOST=db
       - DATABASE_USER
-      - DATABASE_PASSWORD
+      - DATABASE_PASSWORD 
       - DATABASE_NAME
       - DOCKER_API_USER
       - DOCKER_API_HOST
@@ -26,7 +25,7 @@ services:
     volumes:
       - ../.data/CTFd/logs:/var/log/CTFd
       - ../.data/CTFd/uploads:/var/uploads
-      - ..:/opt/CTFd:rw
+      - ..:/opt/CTFd:ro
       - ${SSH_PUBKEY_FILE}:/root/.ssh/id_rsa:ro
       - ${SSH_KNOWN_HOSTS_FILE}:/root/.ssh/known_hosts:ro
       
@@ -35,18 +34,6 @@ services:
     networks:
         default:
         internal:
-
-  # Commented reverse proxy serve
-  # Using our own on the deployment server
-  nginx:
-    image: nginx:stable
-    restart: always
-    volumes:
-      - ../conf/nginx/http.conf:/etc/nginx/nginx.conf
-    ports:
-      - 80:80
-    depends_on:
-      - ctfd
 
   db:
     image: mariadb:10.11

@@ -1,0 +1,24 @@
+<div class="col-md-12 mt-3">
+    <form method="post" enctype="multipart/form-data" id="build-image-form">
+        <div class="form-group">
+            <input
+                class="form-control-file"
+                id="file"
+                name="tar_file"
+                type="file"
+                required
+                accept=".tar,.tar.gz"
+            />
+            <sub class="text-muted">
+                Attach a tar archive to.
+            </sub>
+        </div>
+        <div class="form-group">
+            <input
+                class="btn btn-success float-right"
+                type="submit"
+                value="Build Image"
+            />
+        </div>
+    </form>
+</div>
