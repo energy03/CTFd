@@ -5,7 +5,6 @@ from CTFd.models import db
 from CTFd.schemas.challenges import ChallengeSchema
 from CTFd.utils.decorators import admins_only
 from .utils import (
-    create_nginx_vhost_conf,
     get_chall_token,
     get_image,
     start_container,
@@ -81,7 +80,6 @@ class ChallengeInstanceStart(Resource):
         
         if container:
             ## Update challenge instance status
-            create_nginx_vhost_conf(chall_name, challenge.port)
             challenge.is_running = True
             db.session.add(challenge)
             db.session.commit()
