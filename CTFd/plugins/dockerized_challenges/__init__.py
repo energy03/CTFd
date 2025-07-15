@@ -8,7 +8,8 @@ from CTFd.plugins.dynamic_challenges import DynamicValueChallenge
 from CTFd.plugins.migrations import upgrade
 from CTFd.api import CTFd_API_v1
 from CTFd.plugins.dockerized_challenges.instances import instances_namespace
-
+from CTFd.api.v1.challenges import ChallengeList
+from CTFd.plugins.dockerized_challenges.api.challenges import create_challenge
 
 class DockerizedChallenge(Challenges):
     __mapper_args__ = {"polymorphic_identity": "dockerized"}
@@ -106,6 +107,7 @@ class CTFdDockerizedChallenge(BaseChallenge):
             DynamicValueChallenge.calculate_value(challenge)
 
 
+
 def load(app):
     upgrade(plugin_name="dockerized_challenges")
     CHALLENGE_CLASSES["dockerized"] = CTFdDockerizedChallenge
@@ -129,4 +131,5 @@ def load(app):
         url_prefix=CTFdDockerizedChallenge.route,
     )
 
-    
+    # Override challenge creation logic
+    ChallengeList.post = create_challenge

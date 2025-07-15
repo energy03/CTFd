@@ -5,7 +5,6 @@ from CTFd.models import db
 from CTFd.schemas.challenges import ChallengeSchema
 from CTFd.utils.decorators import admins_only
 from .utils import (
-    create_nginx_vhost_conf,
     get_chall_token,
     get_image,
     start_container,
@@ -81,7 +80,6 @@ class ChallengeInstanceStart(Resource):
         
         if container:
             ## Update challenge instance status
-            create_nginx_vhost_conf(chall_name, challenge.port)
             challenge.is_running = True
             db.session.add(challenge)
             db.session.commit()
@@ -256,3 +254,54 @@ class ChallengeInstanceBuild(Resource):
                 return {"success": True, "data": {"message": "Image built successfully"}}
         except Exception as e:
             return {"success": False, "errors": {"image": ["Error building Docker image"]}, "msg": e.__str__() }, 500
+
+@instances_namespace.route("/join")
+class ChallengeInstanceJoin(Resource):
+    @admins_only
+    @instances_namespace.doc(
+        description="Endpoint to join a Dockerized challenge",
+        responses={
+            200: (
+                "Success",
+                "APISimpleSuccessResponse",
+            ),
+            400: (
+                "An error occured processing the provided or stored data",
+                "APISimpleErrorResponse",
+            ),
+        },
+    )
+    def post(self):
+        data = request.form or request.get_json()
+
+        # Load data through schema for validation but not for insertion
+        schema = ChallengeSchema()
+        response = schema.load(data)
+        if response.errors:
+            return {"success": False, "errors": response.errors}, 400
+
+        challenge_id = data.get("challenge_id")
+        challenge = Challenges.query.filter_by(id=challenge_id).first()
+        
+        if not challenge:
+            return {"success": False, "errors": {"challenge_id": ["Challenge not found"]}}, 404
+        
+        challenge_type = challenge.type
+        
+        if challenge_type != "dockerized":
+            return {"success": False, "errors": {"challenge_id": ["Challenge is not a Dockerized challenge"]}}, 400
+        
+        chall_name = f"chall{challenge.id}"
+        token = get_chall_token(chall_name)
+        response = make_response({ "success": True, "data": {"message": "Instance started successfully"}})
+        response.set_cookie(
+            f"{chall_name}_token",
+            token,
+            max_age=None,  # Session cookie
+            httponly=True,
+            secure=False,  # Use secure cookies in production
+            samesite="Lax",  # Adjust as needed
+            domain=f".{DOMAIN}",
+        )
+
+        return response
