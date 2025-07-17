@@ -37,7 +37,6 @@ CTFd.plugin.run((_CTFd) => {
               }
             })
             .catch(function (error) {
-              console.error("Error:", error);
               ezToast({
                 title: "Error",
                 body: "An error occurred while starting the challenge.",
@@ -80,7 +79,6 @@ CTFd.plugin.run((_CTFd) => {
                 }
               })
               .catch(function (error) {
-                console.error("Error:", error);
                 ezToast({
                   title: "Error",
                   body: "An error occurred while restarting the challenge.",
@@ -123,7 +121,6 @@ CTFd.plugin.run((_CTFd) => {
                 }
                 })
                 .catch(function (error) {
-                  console.error("Error:", error);
                     ezToast({
                         title: "Error",
                         body: "An error occurred while stopping the challenge.",
@@ -156,7 +153,6 @@ CTFd.plugin.run((_CTFd) => {
             }
           })
           .catch(function (error) {
-            console.error("Error:", error);
             ezToast({
               title: "Error",
               body: `An error occurred while deleting the challenge.`,

@@ -38,7 +38,6 @@ CTFd.plugin.run((_CTFd) => {
       },
       success: function (data) {
         form.reset();
-        console.log("data", data);
         pg = ezq.ezProgressBar({
           target: pg,
           width: 100,

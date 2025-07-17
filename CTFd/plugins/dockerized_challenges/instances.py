@@ -3,7 +3,8 @@ from flask_restx import Namespace, Resource
 from CTFd.models import Challenges
 from CTFd.models import db
 from CTFd.schemas.challenges import ChallengeSchema
-from CTFd.utils.decorators import admins_only
+from CTFd.utils.decorators import admins_only, during_ctf_time_only, require_verified_emails
+from CTFd.utils.decorators.visibility import check_challenge_visibility
 from .utils import (
     get_chall_token,
     get_image,
@@ -257,7 +258,9 @@ class ChallengeInstanceBuild(Resource):
 
 @instances_namespace.route("/join")
 class ChallengeInstanceJoin(Resource):
-    @admins_only
+    @check_challenge_visibility
+    @during_ctf_time_only
+    @require_verified_emails
     @instances_namespace.doc(
         description="Endpoint to join a Dockerized challenge",
         responses={
@@ -293,13 +296,19 @@ class ChallengeInstanceJoin(Resource):
         
         chall_name = f"chall{challenge.id}"
         token = get_chall_token(chall_name)
-        response = make_response({ "success": True, "data": {"message": "Instance started successfully"}})
+        response = make_response({
+            "success": True,
+            "data": {
+                "status": "joined",
+                "message": "Successfully joined the challenge",
+            }
+        })
         response.set_cookie(
             f"{chall_name}_token",
             token,
             max_age=None,  # Session cookie
             httponly=True,
-            secure=False,  # Use secure cookies in production
+            secure=False,  # TODO Use secure cookies in production
             samesite="Lax",  # Adjust as needed
             domain=f".{DOMAIN}",
         )

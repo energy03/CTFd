@@ -140,8 +140,6 @@ def build_image_from_tar(tar_content: IO[bytes], image_name: str):
 def get_chall_token(chall_name: str):
     tokens = load_conf()
     varname = f"expected_token_{chall_name}"
-    print("tokens", tokens)
-    print("varname", varname)
     if varname in tokens:
         return tokens[varname]
     else:
@@ -153,7 +151,6 @@ def load_conf():
         with sftp.file(NGINX_CHALL_TOKEN_FILE, "r") as f:
             for line in f:
                 match = re.match(r'set\s+\$(expected_token_\S+)\s+"([^"]+)";', line.strip())
-                print("match", match)
                 if match:
                     tokens[match.group(1)] = match.group(2)
     
