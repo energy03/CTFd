@@ -29,7 +29,6 @@ class DockerizedChallenge(Challenges):
     def __init__(self, *args, **kwargs):
         super(DockerizedChallenge, self).__init__(**kwargs)
         
-        
         if kwargs["is_dynamic"]:
             self.value = kwargs["initial"]
         else:

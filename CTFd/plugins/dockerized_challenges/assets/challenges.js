@@ -164,11 +164,49 @@ CTFd.plugin.run((_CTFd) => {
       });
     }
 
+    function requestCertificates() {
+      ezQuery({
+        title: "Request Challenges Certificates",
+        body: `Are you sure you want to requesSSL/TLS certificates`,
+        success: function () {
+          CTFdFetch(`/api/v1/dockerized_challenges/instances/certificates`, {
+            method: "GET",
+          }).then(function (response) {
+            if (response.status === 200) {
+              window.location.reload();
+            } else {
+              ezToast({
+                title: "Error",
+                body: `An error occurred while requesting certificates.`,
+                icon: "error",
+              });
+            }
+          })
+          .catch(function (error) {
+            ezToast({
+              title: "Error",
+              body: `An error occurred while requesting certificates.`,
+              icon: "error",
+            });
+          }
+        );
+        },
+      });
+    }
+
     $(() => {
         $(".challenge-start-button").click(startChallenge);
         $(".challenge-restart-button").click(restartChallenge);
         $(".challenge-stop-button").click(stopChallenge);
         $(".challenge-delete-button").click(deleteChallenge);
+        $("#challenges-certificates-button").click(() => {
+          // TODO: Logic to request certificates
+          ezToast({
+            title: "Not Implemented",
+            body: "This feature is not implemented yet.",
+            icon: "info",
+          })
+        });
     }
     );
     

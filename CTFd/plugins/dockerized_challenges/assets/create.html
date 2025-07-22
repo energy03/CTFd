@@ -34,22 +34,22 @@
 				This is how many points the challenge is worth right now.
 			</small>
 		</label>
-		<input type="number" class="form-control dockerize-hiddable-standard-required-field" name="value" placeholder="Enter value" >
+		<input type="number" class="form-control dockerize-hiddable-standard-required-field" name="value" placeholder="Enter value" required>
 	</div>
 </div>
 
 <div class="dockerize-hiddable-dynamic" hidden>
 	<div class="form-group">
-		<label for="value">Initial Value<br>
+		<label for="initial">Initial Value<br>
 			<small class="form-text text-muted">
 				This is how many points the challenge is worth initially.
 			</small>
 		</label>
-		<input type="number" class="form-control dockerize-hiddable-dynamic-required-field" name="initial" placeholder="Enter value" >
+		<input type="number" class="form-control dockerize-hiddable-dynamic-required-field" name="initial" placeholder="Enter value" required>
 	</div>
 
 	<div class="form-group" >
-		<label for="value">Decay Function<br>
+		<label for="function">Decay Function<br>
 			<small class="form-text text-muted">
 				<span>How the dynamic value will be calculated based on the Decay value</span>
 				<ul>
@@ -58,14 +58,14 @@
 				</ul>
 			</small>
 		</label>
-		<select name="function" class="custom-select" >
+		<select name="function" class="custom-select dockerize-hiddable-dynamic-required-field0" required disabled>
 			<option value="linear">Linear</option>
 			<option value="logarithmic">Logarithmic</option>
 		</select>
 	</div>
 	
 	<div class="form-group">
-		<label for="value">Decay<br>
+		<label for="decay">Decay<br>
 			<small class="form-text text-muted">
 				<span>The decay value is used differently depending on the above Decay Function</span>
 				<ul>
@@ -75,44 +75,27 @@
 				</ul>
 			</small>
 		</label>
-		<input type="number" class="form-control dockerize-hiddable-dynamic-required-field" name="decay" min="1" placeholder="Enter Decay value" >
+		<input type="number" class="form-control dockerize-hiddable-dynamic-required-field" name="decay" min="1" placeholder="Enter Decay value" required disabled>
 	</div>
 	
 	<div class="form-group">
-		<label for="value">Minimum Value<br>
+		<label for="minimum">Minimum Value<br>
 			<small class="form-text text-muted">
 				This is the lowest that the challenge can be worth
 			</small>
 		</label>
-		<input type="number" class="form-control dockerize-hiddable-dynamic-required-field" name="minimum" placeholder="Enter minimum value" >
+		<input type="number" class="form-control dockerize-hiddable-dynamic-required-field" name="minimum" placeholder="Enter minimum value" required disabled>
 	</div>
 </div>
- 
-{# TODO Remove Image and Container form fields because the're no more needed #}
+
 <div>
 	<div class="form-group">
-		<label for="value">Image<br>
-			<small class="form-text text-muted">
-				The ID of the image used to start the container for the challenge.
-			</small>
-		</label>
-		<input type="text" name="image" class="form-control" placeholder="Enter Image ID" >
-	</div>
-	<div class="form-group">
-		<label for="value">Container<br>
-			<small class="form-text text-muted">
-				The ID of the container to start.
-			</small>
-		</label>
-		<input type="text" name="container" class="form-control" placeholder="Enter Container ID" >
-	</div>
-	<div class="form-group">
-		<label for="value">Bind Port<br>
+		<label for="port">Bind Port<br>
 			<small class="form-text text-muted">
 				The remote localhost port to bind the container to.
 			</small>
 		</label>
-		<input type="number" name="port" class="form-control" placeholder="Enter Bind Port" >
+		<input type="number" name="port" class="form-control" placeholder="Enter Bind Port" required>
 	</div>
 </div>
 {% endblock %}

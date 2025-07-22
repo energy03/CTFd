@@ -314,3 +314,23 @@ class ChallengeInstanceJoin(Resource):
         )
 
         return response
+
+@instances_namespace.route("/certificates")
+class ChallengeInstanceJoin(Resource):
+    @admins_only
+    @instances_namespace.doc(
+        description="Endpoint to request a Dockerized challenges SSL/TLS certificates",
+        responses={
+            200: (
+                "Success",
+                "APISimpleSuccessResponse",
+            ),
+            400: (
+                "An error occured processing the provided or stored data",
+                "APISimpleErrorResponse",
+            ),
+        },
+    )
+    def post(self):
+        # TODO Implement the logic for requesting the certificates
+        pass
