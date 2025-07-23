@@ -51,14 +51,6 @@
 
             <span class="challenge-desc">{% block description %}{{ challenge.html }}{% endblock %}</span>
 
-            {% if challenge.type == 'dockerized' %}
-              <div class="text-center mt-3">
-                <button class="btn btn-primary" @click="joinChallenge({{ challenge.id }})">
-                  <i class="fas fa-play"></i>
-                </button>
-              </div>
-            {% endif %}
-
             {% if challenge.connection_info %}
               <div class="mb-2">
                 <span class="challenge-connection-info">

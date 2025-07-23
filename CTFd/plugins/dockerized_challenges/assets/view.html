@@ -1,5 +1,15 @@
 {% extends "challenge.html" %}
-{% block description %}
-<button class="btn btn-success challenge-join-button" id="challenge-join-button" hidden>Join Challenge</button>
-<br>
+
+{% block connection_info %}
+    {% set conn = challenge.connection_info %}
+    {% if not conn %}
+    {% elif conn.startswith("http") %}
+        <div class="text-center mt-3">
+            <button class="btn btn-primary" @click="joinChallenge()" data-toggle="tooltip" data-placement="top" title="{{conn}}">
+                <i class="fas fa-arrow-up-right-from-square"></i>
+            </button>
+        </div>
+    {% else %}
+        <code>{{ conn }}</code>
+    {% endif %}
 {% endblock %}

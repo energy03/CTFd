@@ -293,17 +293,20 @@ Alpine.data("ChallengeBoard", () => ({
     });
   },
 
-  async joinChallenge(challengeId) {
+  async joinChallenge() {
     this.response = await CTFd.fetch("/api/v1/dockerized_challenges/instances/join", {
       method: "POST",
       body: JSON.stringify({
-        challenge_id: challengeId,
+        challenge_id: this.id,
       }),
     })
       .then(function (response) {
         return response.json();
       })
       .then(function (data) {
+        if (data.success && data.data.url) {
+          window.open(data.data.url, "_blank");
+        }
         return data;
       });
   },

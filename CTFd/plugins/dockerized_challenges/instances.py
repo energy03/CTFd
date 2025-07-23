@@ -11,7 +11,8 @@ from .utils import (
     start_container,
     restart_container,
     stop_container,
-    build_image_from_tar
+    build_image_from_tar,
+    request_certificates,
 )
 import os
 
@@ -301,6 +302,7 @@ class ChallengeInstanceJoin(Resource):
             "data": {
                 "status": "joined",
                 "message": "Successfully joined the challenge",
+                "url": challenge.connection_info
             }
         })
         response.set_cookie(
@@ -316,7 +318,7 @@ class ChallengeInstanceJoin(Resource):
         return response
 
 @instances_namespace.route("/certificates")
-class ChallengeInstanceJoin(Resource):
+class ChallengeCertificatesRequest(Resource):
     @admins_only
     @instances_namespace.doc(
         description="Endpoint to request a Dockerized challenges SSL/TLS certificates",
@@ -331,6 +333,12 @@ class ChallengeInstanceJoin(Resource):
             ),
         },
     )
-    def post(self):
-        # TODO Implement the logic for requesting the certificates
-        pass
+    def get(self):
+        try:
+            success, errors, status = request_certificates()
+            if success:
+                return {"success": True, "data": {"message": "Certificates requested successfully"}}
+            else:
+                return {"success": False, "errors": errors}, status
+        except Exception as e:
+            return {"success": False, "errors": {"certificates": f"{[str(e)]}"}}, 500

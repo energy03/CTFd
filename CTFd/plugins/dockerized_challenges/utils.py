@@ -198,3 +198,29 @@ def remove_token(chall_name):
     if varname in tokens:
         del tokens[varname]
         save_conf(tokens)
+
+def request_certificates():
+    try:
+        flag = ''
+        with SSHCLIENT.open_sftp() as sftp:
+            # Look for filenames in NGINX_LINK_DIRECTORY that match _____.{DOMAIN}
+            filenames = sftp.listdir(NGINX_LINK_DIRECTORY)
+            if not filenames:
+                return False, {"error": "1 No files found in NGINX_LINK_DIRECTORY"}, 404
+            for filename in filenames:
+                if filename.endswith(f'.{DOMAIN}') and not filename.startswith("."):
+                    flag += f"-d {filename} "
+            
+        if not flag:
+            return False, {"error": "No valid domain to request certificate for"}, 404
+        
+        # Request the certificate using certbot --nginx
+        command = f"sudo /usr/bin/certbot --nginx {flag} --non-interactive --agree-tos"
+        _, stdout,sterr = SSHCLIENT.exec_command(command)
+        exit_status = stdout.channel.recv_exit_status()  # Wait for command to finish
+        if exit_status != 0:
+            return False, {"error": f"3 {sterr.read().decode()}"}, 500
+        return True, None, None
+
+    except Exception as e:
+        return False, {"error": f"4 {str(e)}"}, 500
