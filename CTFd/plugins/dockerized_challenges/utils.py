@@ -215,7 +215,7 @@ def request_certificates():
             return False, {"error": "No valid domain to request certificate for"}, 404
         
         # Request the certificate using certbot --nginx
-        command = f"sudo /usr/bin/certbot --nginx {flag} --non-interactive --agree-tos"
+        command = f"sudo /usr/bin/certbot --nginx {flag} --non-interactive --agree-tos --expand"
         _, stdout,sterr = SSHCLIENT.exec_command(command)
         exit_status = stdout.channel.recv_exit_status()  # Wait for command to finish
         if exit_status != 0:
