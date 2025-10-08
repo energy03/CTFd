@@ -1,6 +1,6 @@
 from flask import request, make_response
 from flask_restx import Namespace, Resource
-from CTFd.models import Challenges
+from CTFd.models import Challenges, Flags
 from CTFd.models import db
 from CTFd.schemas.challenges import ChallengeSchema
 from CTFd.utils.decorators import admins_only, during_ctf_time_only, require_verified_emails
@@ -14,6 +14,7 @@ from .utils import (
     build_image_from_tar,
     request_certificates,
 )
+from CTFd.utils.logging import log
 import os
 
 DOMAIN = os.getenv("CHALLENGES_DOMAIN")
@@ -61,6 +62,9 @@ class ChallengeInstanceStart(Resource):
         
         # Verify if the instance is already running
         if challenge.is_running:
+            challenge.is_running = True
+            db.session.add(challenge)
+            db.session.commit()
             return {"success": False, "errors": {"challenge_id": ["Challenge instance is already running"]}}, 400
         
         # Get the image
@@ -71,12 +75,21 @@ class ChallengeInstanceStart(Resource):
         
         # Get the exposed ports list of the image
         exposed_ports = list(image.attrs.get("Config", {}).get("ExposedPorts", {}).keys())
+        flags = Flags.query.filter_by(challenge_id=challenge_id).all()
+        env = {}
+        acc = 1
+        for flag in flags:
+            env[f"FLAG{acc}"] = flag.content
+            acc+=1 
 
         ports = {}
         if len(exposed_ports) == 1 and challenge.port:
+            if challenge.protocol == "http":
                 ports = { exposed_ports[0]: ("127.0.0.1", challenge.port) }
+            else:
+                ports = { exposed_ports[0]: ("0.0.0.0", challenge.port) }
         
-        container = start_container(image, challenge.container, ports=ports)
+        container = start_container(image, challenge.container, ports=ports, env=env)
 
         chall_name = f"chall{challenge.id}"
         
@@ -86,19 +99,20 @@ class ChallengeInstanceStart(Resource):
             db.session.add(challenge)
             db.session.commit()
 
-            chall_token = get_chall_token(chall_name)
-
             # Return the response with a Set-Cookie header
             response = make_response({ "success": True, "data": {"message": "Instance started successfully"}})
-            response.set_cookie(
-                f"{chall_name}_token",
-                chall_token,
-                max_age=None,  # Session cookie
-                httponly=True,
-                secure=False,  # Use secure cookies in production
-                samesite="Lax",  # Adjust as needed
-                domain=f".{DOMAIN}",
-            )
+
+            if challenge.protocol == "http":
+                chall_token = get_chall_token(chall_name)
+                response.set_cookie(
+                    f"{chall_name}_token",
+                    chall_token,
+                    max_age=None,  # Session cookie
+                    httponly=True,
+                    secure=False,  # Use secure cookies in production
+                    samesite="Lax",  # Adjust as needed
+                    domain=f".{DOMAIN}",
+                )
 
             return response
         else:
@@ -143,6 +157,9 @@ class ChallengeInstanceRestart(Resource):
         
         # Verify if the instance is running
         if not challenge.is_running:
+            challenge.is_running = False
+            db.session.add(challenge)
+            db.session.commit()
             return {"success": False, "errors": {"challenge_id": ["Challenge instance is not running"]}}, 400
         
         # Restart the container
@@ -187,6 +204,10 @@ class ChallengeInstanceStop(Resource):
         
         # Verify if the instance is running
         if not challenge.is_running:
+            challenge.is_running = False
+            db.session.add(challenge)
+            db.session.commit()
+            # If the instance is not running, return an error
             return {"success": False, "errors": {"challenge_id": ["Challenge instance is not running"]}}, 400
         
         # Stop the container
@@ -247,6 +268,7 @@ class ChallengeInstanceBuild(Resource):
         tar_file_content = tar_file.stream
 
         # TODO check the mime type and the magic header to see if it is a valid tar file
+        # TODO check if Dockerfile expose only one port
 
         try:
             image = build_image_from_tar(tar_file_content, challenge.image)

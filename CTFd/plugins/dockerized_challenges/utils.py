@@ -84,10 +84,10 @@ def create_nginx_vhost_conf(challenge_name: str, port: int):
         return False
 
 
-def start_container(image: str, container_name: str, ports: dict = None):
+def start_container(image: str, container_name: str, ports: dict = None, env = None):
     try:
         container = CLIENT.containers.run(
-            image, name=container_name, detach=True, remove=True, ports=ports
+            image, name=container_name, detach=True, remove=True, ports=ports, environment=env
         )
         return container
     except Exception:

@@ -23,6 +23,7 @@ services:
       - ERROR_LOG=-
       - REVERSE_PROXY=true
       - CHALLENGES_DOMAIN
+      - FLASK_ENV=development
     volumes:
       - ../.data/CTFd/logs:/var/log/CTFd
       - ../.data/CTFd/uploads:/var/uploads

@@ -25,6 +25,7 @@ class DockerizedChallenge(Challenges):
     container = db.Column(db.String(64), default=None)
     port = db.Column(db.Integer, default=None)
     is_running = db.Column(db.Boolean, default=False)
+    protocol = db.Column(db.String(16), default="http")
 
     def __init__(self, *args, **kwargs):
         super(DockerizedChallenge, self).__init__(**kwargs)

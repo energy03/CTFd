@@ -58,7 +58,7 @@
 				</ul>
 			</small>
 		</label>
-		<select name="function" class="custom-select dockerize-hiddable-dynamic-required-field0" required disabled>
+		<select name="function" class="custom-select dockerize-hiddable-dynamic-required-field" required disabled>
 			<option value="linear">Linear</option>
 			<option value="logarithmic">Logarithmic</option>
 		</select>
@@ -88,11 +88,24 @@
 	</div>
 </div>
 
+<div class="form-group">
+	<label for="protocol">Protocol<br>
+		<small class="form-text text-muted">
+			The protocol used to connect to the challenge.
+		</small>
+	</label>
+	<select name="protocol" class="custom-select">
+		<option value="" selected>Choose Protocol</option>
+		<option value="http">HTTP</option>
+		<option value="ssh">SSH</option>
+	</select>
+</div>
+
 <div>
 	<div class="form-group">
 		<label for="port">Bind Port<br>
 			<small class="form-text text-muted">
-				The remote localhost port to bind the container to.
+				The remote port to bind the container to.
 			</small>
 		</label>
 		<input type="number" name="port" class="form-control" placeholder="Enter Bind Port" required>

@@ -1,7 +1,7 @@
 """Additionnal columns to dockerized_challenge
 
 Revision ID: 0f1a9f47a75e
-Revises: a49ad66aa0f1
+Revises: c1b1d46b9b81
 Create Date: 2025-06-04 15:08:24.427015
 
 """

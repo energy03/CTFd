@@ -33,8 +33,13 @@ def create_challenge(self):
     clear_challenges()
 
     if challenge.type == "dockerized":
-        create_nginx_vhost_conf(chall_name, challenge.port)
-        challenge.connection_info = f"http://{chall_name}.{DOMAIN}"
+        if challenge.protocol == "http":
+           create_nginx_vhost_conf(chall_name, challenge.port)
+           challenge.connection_info = f"http://{chall_name}.{DOMAIN}"
+        elif challenge.protocol == "ssh":
+           challenge.connection_info = f"ssh://{chall_name}.{DOMAIN}:{challenge.port}"
+        else:
+           challenge.connection_info = ""
         challenge.image = challenge.image if challenge.image else f"{chall_name}-image"
         challenge.container = challenge.container if challenge.container else f"{chall_name}-container"
         db.session.add(challenge)

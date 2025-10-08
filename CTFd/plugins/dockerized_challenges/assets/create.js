@@ -21,14 +21,15 @@ CTFd.plugin.run((_CTFd) => {
     }
 
     $(() => {
+        onStandardChallenge(); // Default to standard challenge
+
         $("#dockerize-challenge-dynamic-check-input").on("change", function() {
-        if ($(this).is(":checked")) {
-            onDynamicChallenge();
-        } else {
-            onStandardChallenge();
-        }
-    });
+            if ($(this).is(":checked")) {
+                onDynamicChallenge();
+            } else {
+                onStandardChallenge();
+            }
+        });
 
     })
 })
-

@@ -1,7 +1,6 @@
 """added_tables_for_dockerized_challenges
 
 Revision ID: c1b1d46b9b81
-Revises: a49ad66aa0f1
 Create Date: 2025-05-05 14:00:42.309278
 
 """
